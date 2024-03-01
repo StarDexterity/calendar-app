@@ -1,0 +1,411 @@
+body {
+  font-family: "Catamaran", sans-serif;
+  margin: auto;
+  user-select: none;
+  background-color: #F3F3F3;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+
+main {
+  height: calc(100% - 42px);
+  display: flex;
+}
+
+.navbar {
+  height: 40px;
+  -webkit-app-region: drag;
+  border-bottom: black 1px solid;
+}
+
+.sidebar {
+  width: 18vw;
+  height: 100%;
+  border-left: black 1px solid;
+  user-select: none;
+  overflow: visible;
+  font-size: 1vw;
+}
+
+.resize-handle {
+  height: 100%;
+  width: 6px;
+  float: left;
+  margin-left: -2px;
+  cursor: ew-resize;
+
+}
+
+.main-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ----------------------- calendar --------------------------------- */
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  background-image: linear-gradient(to bottom right, rgb(245, 110, 110), rgb(128, 239, 145));
+  border-radius: 1rem;
+  width: 85%;
+  max-width: 85%;
+  aspect-ratio: 1.4;
+  margin: auto;
+  padding: 0.65vw;
+}
+
+/* @media (max-width: 1200px) {
+  .calendar {
+    aspect-ratio: 1.1;
+  }
+} */
+
+.cal-header {
+  margin-bottom: 0.3%;
+}
+
+.cal-header h2 {
+  display: inline-block;
+  margin-top: 0;
+  font-size: 1.5vw;
+  font-weight: 500;
+}
+
+.cal-date-controls {
+  float: right;
+}
+
+.cal-date-controls button {
+  border: none;
+  border-radius: 10%;
+  background-color: #e7e7e7;
+  aspect-ratio: 1;
+  cursor: pointer;
+}
+
+.cal-date-controls button .material-symbols-outlined {
+  font-size: 2vw;
+}
+
+.cal-date-controls button:hover {
+  background-color: #e7e7e7ca;
+
+}
+
+.cal-days-div {
+  display: inline-grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5%;
+  margin: auto;
+  width: 100%;
+}
+
+.cal-day-div {
+  background-color: #e0e0e07d;
+}
+
+.cal-day-div p {
+  margin-left: 0.1vw;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  font-size: 1vw;
+  font-weight: 500;
+  font-family: "Montserrat" sans-serif;
+}
+
+/* ---------------------- calendar dates ------------------------ */
+
+.cal-dates-div {
+  display: inline-grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 0.5%;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+
+.cal-date-div {
+  background-color: #e0e0e07d;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  min-height: 0;
+  padding: 0.2vw;
+  cursor: pointer;
+}
+
+.cal-date-title {
+  margin: 0;
+  font-size: 1em;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1;
+}
+
+.current-date-icon {
+  visibility: hidden;
+  width: 1vw;
+  height: 1vw;
+  float: right;
+  background-color: blue;
+  border-radius: 50%;
+  margin: 0.1vw
+}
+
+.current-date .current-date-icon {
+  visibility: visible;
+}
+
+.date-selected {
+  border: 1px blue solid;
+}
+
+/* ------------------- calendar events ---------------------------- */
+
+.cal-event-div {
+  display: flex;
+  margin: 0.2vw 0;
+  padding: 0.2vw 0;
+  background-color: #8ccf92;
+  border-radius: 0.5vw;
+}
+
+.cal-event-div.event-selected {
+  border: 1px solid blue;
+}
+
+.cal-event-div p {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1;
+  font-size: 0.8em;
+}
+
+.cal-event-time {
+  opacity: 80%;
+  font-style: italic;
+  margin-left: 0.3vw;
+}
+
+.cal-event-title {
+  margin-left: 0.2vw;
+  font-weight: 800;
+}
+
+
+/* ---------------------------------- infobar --------------------------- */
+
+.infobar-div {
+  margin: 0 2vw;
+}
+
+.infobar-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-event-btn {
+  width: 40px;
+  height: 40px;
+  justify-self: baseline;
+  border: none;
+  border-radius: 10%;
+  background-color: #6EBFED;
+  cursor: pointer;
+}
+
+.add-event-btn:hover {
+  background-color: #5ca1c9;
+}
+
+.infobar-event-div {
+  border-top: 1px black solid;
+  padding-top: 1vh;
+  padding-top: 0.3vh;
+}
+
+.infobar-event-div:hover {
+  background-color: #0000001a;
+}
+
+.infobar-event-div p {
+  margin: 0;
+}
+
+.infobar-flex {
+  display: flex;
+  flex-direction: row;
+}
+
+.infobar-time {
+  width: 35%;
+}
+
+.infobar-title {
+  font-weight: 700;
+}
+
+.infobar-duration {
+  font-style: italic;
+  color: #000000a4;
+}
+
+
+/* --------- adialog --------------- */
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 18vw;
+  padding: 0.5vw;
+
+  background-color: #F3F3F3;
+  border-radius: 1%;
+  box-shadow: 0 0 5px #00000058;
+}
+
+.dialog-header {
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 1vw;
+}
+
+.dialog h2 {
+  line-height: 1;
+  margin: 0;
+}
+
+.dialog hr {
+  margin: 0 -0.5vw;
+}
+
+
+.form-flex {
+  margin-top: 1.5vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
+.dialog-form input,
+textarea {
+  display: block;
+  flex: 1;
+  border: none;
+  background-color: #D9D9D9;
+  border-radius: 11px;
+  max-width: 60%;
+}
+
+.dialog-form textarea {
+  resize: none;
+}
+
+.form-submit-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10%;
+  background-color: #6EBFED;
+  cursor: pointer;
+  margin-top: 1.2vw;
+  float: right;
+}
+
+.dialog-form-submit:hover {
+  background-color: #5ca1c9;
+}
+
+.blanket {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 40px;
+  left: 0;
+  backdrop-filter: blur(2px);
+  background-color: #00000046;
+}
+
+.dialog-close-btn {
+  cursor: pointer;
+}
+
+.dialog-close-btn:hover {
+  transform: scale(1.1);
+}
+
+/* ------------- view event popup ------------------ */
+.view-event-popup {
+  z-index: 2;
+  position: fixed;
+  background-color: #F3F3F3;
+  top: 100px;
+  border-radius: 1vw;
+  box-shadow: 0 0 1vw #00000075;
+  padding: 0.5vw;
+  visibility: hidden;
+  min-width: 17vw;
+}
+
+.view-event-popup p {
+  max-width: 25vw;
+  user-select: text;
+}
+
+.view-event-popup h2 {
+  line-height: 1;
+  margin: 0.5em 0;
+  min-width: 56%;
+  user-select: text;
+}
+
+.view-event-popup hr {
+  margin: 0 -0.5vw;
+}
+
+.view-event-popup button:hover {
+  transform: scale(1.1);
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.control-btn {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}
+
+.control-btn:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
