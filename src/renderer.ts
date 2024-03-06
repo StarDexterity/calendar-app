@@ -1,6 +1,6 @@
 import './index.css';
 import Event from './event'
-import { format12HourTime, monthString, format24HourTime } from './time'
+import { format12HourTime, monthString, format24HourTime, getTimeFromMidnight } from './time'
 
 // get date today
 const now = new Date()
@@ -131,12 +131,6 @@ function addEvent(event: Event): void {
 
     // save data
     saveEvents()
-}
-
-/** Gets the time from midnight in milliseconds
- */
-function getTimeFromMidnight(date: Date): number {
-    return new Date(date).setFullYear(1970, 0, 1)
 }
 
 /** Sorts events by time from midnight ascending

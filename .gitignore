@@ -9,6 +9,8 @@ lerna-debug.log*
 # Vscode
 .vscode
 
+dist
+
 
 # testing data
 test-data.json
