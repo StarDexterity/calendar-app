@@ -21,23 +21,73 @@ body {
 
 
 main {
-  height: calc(100% - 42px);
+  height: calc(100% - 62px);
   display: flex;
 }
 
 .navbar {
-  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 20%;
+  height: 60px;
   -webkit-app-region: drag;
   border-bottom: black 1px solid;
+  align-items: center;
 }
 
-.sidebar {
+.navbar * {
+  -webkit-app-region: no-drag;
+}
+
+.navbar h3 {
+  margin: 0;
+}
+
+#left-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: stretch;
+  width: calc(15vw - 30px);
+  border-right: black 1px solid;
+  padding: 15px;
+}
+
+.selector-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selector-dates-div {
+  display: inline-grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  row-gap: 8px;
+
+  width: 100%;
+  height: 150px;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.selector-dates-div p {
+  margin: 0;
+  line-height: 20px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+
+#right-sidebar {
   width: 18vw;
   height: 100%;
   border-left: black 1px solid;
   user-select: none;
   overflow: visible;
-  font-size: 1vw;
 }
 
 .resize-handle {
@@ -61,13 +111,10 @@ main {
 .calendar {
   display: flex;
   flex-direction: column;
-  background-image: linear-gradient(to bottom right, rgb(245, 110, 110), rgb(128, 239, 145));
+  /* background-image: linear-gradient(to bottom right, rgb(245, 110, 110), rgb(128, 239, 145)); */
   border-radius: 1rem;
-  width: 85%;
-  max-width: 85%;
-  aspect-ratio: 1.4;
-  margin: auto;
-  padding: 0.65vw;
+  height: 100%;
+  padding: 10px;
 }
 
 /* @media (max-width: 1200px) {
@@ -83,12 +130,14 @@ main {
 .cal-header h2 {
   display: inline-block;
   margin-top: 0;
-  font-size: 1.5vw;
   font-weight: 500;
 }
 
 .cal-date-controls {
+  display: flex;
   float: right;
+  gap: 5px;
+  align-items: center;
 }
 
 .cal-date-controls button {
@@ -97,11 +146,15 @@ main {
   background-color: #e7e7e7;
   aspect-ratio: 1;
   cursor: pointer;
+  height: 40px;
 }
 
-.cal-date-controls button .material-symbols-outlined {
-  font-size: 2vw;
+#current-month-btn {
+  width: 60px;
+  font-weight: bold;
 }
+
+
 
 .cal-date-controls button:hover {
   background-color: #e7e7e7ca;
@@ -124,7 +177,6 @@ main {
   margin-left: 0.1vw;
   margin-top: 0.5vh;
   margin-bottom: 0.5vh;
-  font-size: 1vw;
   font-weight: 500;
   font-family: "Montserrat" sans-serif;
 }
@@ -134,7 +186,7 @@ main {
 .cal-dates-div {
   display: inline-grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   gap: 0.5%;
   margin: auto;
   width: 100%;
@@ -145,7 +197,6 @@ main {
 
 .cal-date-div {
   background-color: #e0e0e07d;
-  backdrop-filter: blur(20px);
   overflow: hidden;
   min-height: 0;
   padding: 0.2vw;
@@ -154,7 +205,6 @@ main {
 
 .cal-date-title {
   margin: 0;
-  font-size: 1em;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
@@ -185,8 +235,6 @@ main {
   display: flex;
   margin: 0.2vw 0;
   padding: 0.2vw 0;
-  background-color: #8ccf92;
-  border-radius: 0.5vw;
 }
 
 .cal-event-div.event-selected {
@@ -197,7 +245,6 @@ main {
   margin-top: 0;
   margin-bottom: 0;
   line-height: 1;
-  font-size: 0.8em;
 }
 
 .cal-event-time {
@@ -209,6 +256,9 @@ main {
 .cal-event-title {
   margin-left: 0.2vw;
   font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
@@ -250,7 +300,14 @@ main {
 }
 
 .infobar-event-div p {
-  margin: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.infobar-title {
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .infobar-flex {
@@ -259,7 +316,8 @@ main {
 }
 
 .infobar-time {
-  width: 35%;
+  margin-right: 10px;
+  white-space: nowrap;
 }
 
 .infobar-title {
@@ -345,7 +403,7 @@ textarea {
   position: fixed;
   width: 100%;
   height: 100%;
-  top: 40px;
+  top: 60px;
   left: 0;
   backdrop-filter: blur(2px);
   background-color: #00000046;
@@ -370,11 +428,19 @@ textarea {
   padding: 0.5vw;
   visibility: hidden;
   min-width: 17vw;
+  max-width: 25vw;
 }
 
 .view-event-popup p {
   max-width: 25vw;
   user-select: text;
+}
+
+#event-details-title {
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; 
+  line-height: 1.2; 
 }
 
 .view-event-popup h2 {

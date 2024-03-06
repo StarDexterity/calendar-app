@@ -1,6 +1,6 @@
 import './index.css';
 import Event from './event'
-import { format12HourTime, monthString, format24HourTime, getTimeFromMidnight } from './time'
+import { format12HourTime, monthString, format24HourTime, getTimeFromMidnight, monthStringShort } from './time'
 
 // get date today
 const now = new Date()
@@ -22,10 +22,10 @@ setup()
 /** Sets up functionality for the application. This function is responsible for adding all event listeners, loading data, and rendering the calendar. */
 function setup() {
     // save events to storage
-    document.getElementById('save-events-btn').onclick = saveEvents
+    // document.getElementById('save-events-btn').onclick = saveEvents
 
     // load events from storage
-    document.getElementById('load-events-btn').onclick = loadEvents
+    // document.getElementById('load-events-btn').onclick = loadEvents
 
     // prev month button
     document.getElementById('prev-month-btn').onmouseup = prevMonthBtnMouseUp
@@ -87,6 +87,31 @@ function setup() {
     // render calendar
     renderCalendar()
     renderSidebar()
+
+    const selectorDates = document.querySelector('.selector-dates-div')
+    const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+    for (let i = 0; i < 7; i++) {
+        const p = document.createElement('p')
+        p.textContent = days[i]
+        selectorDates.appendChild(p)
+    }
+
+    const dayOffset = new Date(year, month, 1).getDay();
+
+    for (let i = 0; i < 7 * 6; i++) {
+        let cDate = new Date(year, month, i + 1 - dayOffset)
+        const p = document.createElement('p')
+        p.className = 'selector-date'
+        p.textContent = cDate.getDate().toString()
+        if (cDate.getMonth() !== month) {
+            p.style.opacity = "70%"
+        }
+        if (cDate.getDate() === now.getDate()) {
+            p.style.backgroundColor = 'blue'
+            p.style.borderRadius = '50%'
+        }
+        selectorDates.appendChild(p)
+    }
 }
 
 // load and save functions
@@ -211,9 +236,9 @@ function currentMonthBtnMouseUp() {
     year = curDate.getFullYear()
 
 
-    setSelectedDate(curDate)
     renderCalendar()
     renderSidebar()
+    setSelectedDate(curDate)
 }
 
 /** Combines a date with a time
@@ -327,7 +352,7 @@ function renderSidebar() {
     if (!selectedDate) return
 
     // format date text
-    const dateText = selectedDate.toLocaleDateString(locale, { weekday: "long", month: "short", day: "numeric" })
+    const dateText = selectedDate.toLocaleDateString(locale, { weekday: "short", month: "short", day: "numeric" })
 
     // set date header
     document.getElementById('infobar-header-date').textContent = dateText
@@ -373,7 +398,6 @@ function renderSidebar() {
 /** Creates all the content within the calendar dates div, only call on setup, prevMonth, nextMonth, currentMonth, or when the vast majority of the content gets changed. Do not call for minor changes. */
 function renderCalendar() {
     const dayOffset = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
     const calendarDatesDiv = document.querySelector('.cal-dates-div')
 
     // set calendar title
@@ -382,47 +406,41 @@ function renderCalendar() {
     // clear calendar dates div content
     calendarDatesDiv.innerHTML = ''
 
-    for (let i = 0; i < 5 * 7; i++) {
+    for (let i = 0; i < 6 * 7; i++) {
         const calDateDiv = document.createElement('div')
         calDateDiv.className = 'cal-date-div'
 
         // mousedown calendar date
         calDateDiv.addEventListener('mouseup', calendarDateDivMouseUp)
 
-        // curve bottom left and bottom right
-        if (i == 4 * 7) {
-            calDateDiv.style.borderRadius = '0 0 0 10%'
+        let cDate = new Date(year, month, i + 1 - dayOffset)
+
+
+
+        let fDate = cDate.getDate().toString()
+        if (i == 0 || fDate === '1') {
+            fDate = monthStringShort(cDate.getMonth()) + ' ' + fDate
         }
-        if (i == 5 * 7 - 1) {
-            calDateDiv.style.borderRadius = '0 0 10% 0'
-        }
-
-        let cDate = i + 1 - dayOffset
-
-        if (cDate > 0 && cDate <= daysInMonth || daysInMonth + dayOffset - i > 5 * 7) {
-            if (daysInMonth + dayOffset - i > 5 * 7) {
-                cDate = new Date(year, month + 1, -i).getDate();
-            }
 
 
-            calDateDiv.innerHTML = `
+        calDateDiv.innerHTML = `
             <div style="display: flex; justify-content: space-between;">
-                <p class="cal-date-title">${cDate.toString()}</p>
+                <p class="cal-date-title">${fDate}</p>
                 <div class="current-date-icon"></div>
             </div>
             <div class="cal-events-div"></div>
             `
 
-            // add events
-            renderEvents()
+        
 
-            // can retrieve data value from div in the future
-            calDateDiv.setAttribute('data-date', `${new Date(year, month, cDate).toDateString()}`)
+        // can retrieve data value from div in the future
+        calDateDiv.setAttribute('data-date', `${cDate.toDateString()}`)
 
-        }
-        // add date to calendar
         calendarDatesDiv.appendChild(calDateDiv)
     }
+
+    // add events
+    renderEvents()
 
 
     // highlight current day
@@ -529,7 +547,7 @@ function updateEventFormOnSubmit() {
     selectedEvent.description = description
 
     document.getElementById('update-event-display').style.visibility = 'hidden'
-    
+
     // refresh ui
     renderEventsOnDate(selectedEvent.startTime.toDateString())
     renderSidebar()
@@ -569,7 +587,7 @@ function showEventDetailsPopup(event: Event, eventDiv: HTMLElement): HTMLElement
     if (event.endTime) {
         time.textContent += ' - ' + event.endTime.toLocaleString(locale, { timeStyle: 'short', hour12: true })
     }
-    
+
     description.textContent = event.description
 
     // returns div so div can be placed accordingly
@@ -660,6 +678,8 @@ function renderEventsOnDate(dateStr: string): void {
     // get events
     const events = getEventsFromDate(dateStr)
 
+    const maxEvents = 3
+
     // if no events on the date, return early
     if (!events) return;
 
@@ -672,10 +692,10 @@ function renderEventsOnDate(dateStr: string): void {
             eventsDiv.appendChild(createEventDiv(event, dateStr, index))
         })
     } else {
-        events.slice(0, 3).forEach((event, index) => {
+        events.slice(0, 2).forEach((event, index) => {
             eventsDiv.appendChild(createEventDiv(event, dateStr, index))
         })
-        eventsDiv.appendChild(createEventOverflowDiv(events.length - 3))
+        eventsDiv.appendChild(createEventOverflowDiv(events.length - 2))
     }
 
 }

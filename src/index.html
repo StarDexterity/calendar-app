@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
+  <title>Calendar App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -14,44 +15,53 @@
 </head>
 
 <body>
-  <div class="navbar"></div>
+  <div class="navbar">
+    <div class="cal-date-controls">
+      <button id="current-month-btn">Today</button>
+      <button id="prev-month-btn"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+      <button id="next-month-btn"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+      <h3 id="calendar-title">February 2024</h3>
+    </div>
+  </div>
   <main>
+    <div id="left-sidebar">
+      <div class="selector-header">
+        <span>March, 2024</span>
+        <span>
+          <span class="material-symbols-outlined">keyboard_arrow_up</span>
+          <span class="material-symbols-outlined">keyboard_arrow_down</span>
+        </span>
+      </div>
+      <div class="selector-dates-div"></div>
+    </div>
+
+
     <div id="main" class="main-content">
-      <button id="save-events-btn">Save Events</button>
-      <button id="load-events-btn">Load Events</button>
+      <!-- <button id="save-events-btn">Save Events</button>
+      <button id="load-events-btn">Load Events</button> -->
       <div class="calendar">
         <div class="cal-header">
-          <span>
-            <h2 id="calendar-title">February 2024</h2>
-          </span>
-
-          <div class="cal-date-controls">
-            <button id="current-month-btn"><span class="material-symbols-outlined">my_location</span></button>
-            <button id="prev-month-btn"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
-            <button id="next-month-btn"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
-          </div>
-
           <div class="cal-days-div">
             <div class="cal-day-div">
-              <p>Sunday</p>
+              <p>SUN</p>
             </div>
             <div class="cal-day-div">
-              <p>Monday</p>
+              <p>MON</p>
             </div>
             <div class="cal-day-div">
-              <p>Tuesday</p>
+              <p>TUE</p>
             </div>
             <div class="cal-day-div">
-              <p>Wednesday</p>
+              <p>WED</p>
             </div>
             <div class="cal-day-div">
-              <p>Thursday</p>
+              <p>THU</p>
             </div>
             <div class="cal-day-div">
-              <p>Friday</p>
+              <p>FRI</p>
             </div>
             <div class="cal-day-div">
-              <p>Saturday</p>
+              <p>SAT</p>
             </div>
           </div>
         </div>
@@ -59,7 +69,7 @@
       </div>
     </div>
 
-    <div id="sidebar" class="sidebar">
+    <div id="right-sidebar">
       <div id="resize-handle" class="resize-handle"></div>
       <div class="infobar-div">
         <div class="infobar-header">
@@ -138,7 +148,7 @@
 
     <div id="event-details-popup" class="view-event-popup">
       <div class="flex-space-between">
-        <h2 id="event-details-title"></h2>
+        <h4 id="event-details-title"></h4>
         <button id="event-details-delete-btn" class="control-btn"><span
             class="material-symbols-outlined">delete</span></button>
         <button id="event-details-edit-btn" class="control-btn"><span

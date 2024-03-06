@@ -17,6 +17,11 @@ export function monthString(year: number, month: number): string {
     return `${monthNames[month]}, ${year}`
 }
 
+export function monthStringShort(month: number): string {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return monthNames[month]
+}
+
 /** Gets the time from midnight in milliseconds
  */
 export function getTimeFromMidnight(date: Date): number {
