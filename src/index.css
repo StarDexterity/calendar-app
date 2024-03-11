@@ -80,6 +80,7 @@ main {
   width: 20px;
   height: 20px;
   padding: 0;
+  cursor: pointer;
 }
 
 #right-sidebar {
@@ -88,15 +89,6 @@ main {
   border-left: black 1px solid;
   user-select: none;
   overflow: visible;
-}
-
-.resize-handle {
-  height: 100%;
-  width: 6px;
-  float: left;
-  margin-left: -2px;
-  cursor: ew-resize;
-
 }
 
 .main-content {
@@ -201,6 +193,10 @@ main {
   min-height: 0;
   padding: 0.2vw;
   cursor: pointer;
+}
+
+.cal-date-div:focus {
+  outline: none;
 }
 
 .cal-date-title {

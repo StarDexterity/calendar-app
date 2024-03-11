@@ -69,9 +69,9 @@
       </div>
     </div>
 
-    <div id="right-sidebar">
+    <!-- <div id="right-sidebar">
       <div id="resize-handle" class="resize-handle"></div>
-      <div class="infobar-div">
+      <div style="visibility: hidden;" class="infobar-div" id="infobar-div">
         <div class="infobar-header">
           <h3 id="infobar-header-date">${dateText}</h3>
           <button id="infobar-add-event-btn" class="add-event-btn"><span
@@ -80,7 +80,7 @@
         <div id="infobar-events-div"></div>
       </div>
 
-    </div>
+    </div> -->
 
     <div style="visibility: hidden;" id="add-event-display">
       <div id="add-event-blanket" class="blanket"></div>
@@ -149,12 +149,14 @@
     <div id="event-details-popup" class="view-event-popup">
       <div class="flex-space-between">
         <h4 id="event-details-title"></h4>
-        <button id="event-details-delete-btn" class="control-btn"><span
-            class="material-symbols-outlined">delete</span></button>
-        <button id="event-details-edit-btn" class="control-btn"><span
-            class="material-symbols-outlined">edit</span></button>
-        <button id="event-details-close-btn" class="control-btn"><span
-            class="material-symbols-outlined">close</span></button>
+        <div>
+          <button id="event-details-delete-btn" class="control-btn"><span
+              class="material-symbols-outlined">delete</span></button>
+          <button id="event-details-edit-btn" class="control-btn"><span
+              class="material-symbols-outlined">edit</span></button>
+          <button id="event-details-close-btn" class="control-btn"><span
+              class="material-symbols-outlined">close</span></button>
+        </div>
       </div>
       <p id="event-details-time"></p>
       <hr>

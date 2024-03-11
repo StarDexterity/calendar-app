@@ -12,7 +12,20 @@ export function format12HourTime(date: Date): string {
     return formattedTime
 }
 
-export function monthString(year: number, month: number): string {
+/** Combines a date with a time
+ * @param dateString Example: 'Fri Feb 02 2024'
+ * @param timeString Example: '15:35'
+ * @returns A date object based on the date and time of the inputs
+ */
+export function combineDateWithTime(dateString: string, timeString: string): Date {
+    console.log(timeString)
+    const date = new Date(dateString).setHours(0, 0, 0, 0)
+    const time = new Date('1970-01-01 ' + timeString + 'Z').getTime()
+
+    return new Date(date + time)
+}
+
+export function monthYearString(year: number, month: number): string {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return `${monthNames[month]}, ${year}`
 }
