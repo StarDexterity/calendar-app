@@ -22,10 +22,20 @@ export class Event {
         return this.startTime.toDateString()
     }
 
+    /** Title of the event (combination of title and start date, not including time, must be unique) */
     title: string
+
+    /** Start date and time (if not all day) of the event */
     startTime: Date
-    endTime: Date // optional
-    description: string // optional
+    
+    /** End date and time (if not all day) of the event. Optional. */
+    endTime: Date
+    
+    /** Extra details or notes. Optional. */
+    description: string
+
+    /** Does the event occur for the whole day */
+    allDay: boolean = false
 }
 
 
@@ -50,6 +60,7 @@ export class Events implements Subject {
     * @param dateStr Date string from calling date.toDateString(). Example 'Fri 1 March 2024'
     */
     public getEventsFromDate(dateStr: string): Readonly<Array<Readonly<Event>>> {
+        if (!this.data.has(dateStr)) return []
 
         return Array.from(this.data.get(dateStr))
     }
@@ -99,8 +110,6 @@ export class Events implements Subject {
             })
         })
         this.data = new Map(events)
-        
-        this.notify()
     }
 
     public stringify(): string {
