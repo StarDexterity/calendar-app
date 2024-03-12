@@ -7,6 +7,16 @@ export default class Calendar implements Observer {
     private calTitle: HTMLElement
     private datesDiv: HTMLElement
     private maxEvents = 3 // displayed per date
+    
+    private _monthViewed: Date
+
+    private set monthViewed(val: Date) {
+        this._monthViewed = val
+    }
+
+    public get monthViewed(): Date {
+        return this._monthViewed
+    }
 
 
     constructor(events: Events) {
@@ -68,6 +78,8 @@ export default class Calendar implements Observer {
             const c = (curDay as HTMLElement)
             c.classList.add('current-date')
         }
+
+        this.monthViewed = month
     }
 
 

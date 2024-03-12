@@ -2,6 +2,7 @@ import './index.css';
 import { format12HourTime, monthYearString, format24HourTime, getTimeFromMidnight, monthStringShort, combineDateWithTime } from './time'
 import Calendar from './calendar';
 import { Events, Event } from './events';
+import DateNavigator from './dateNavigator';
 
 // preferences
 const locale = 'en-GB'
@@ -11,11 +12,10 @@ const events: Events = new Events()
 let selectedEvent: Event = null
 
 
-let selectedDate: Date = new Date()
-let dateOffset: number = 0
 let viewLevel: string = 'month' // options: ['month', 'week', 'day']
 
 const cal = new Calendar(events)
+const dateNav = new DateNavigator()
 
 // set up buttons and calendar
 setup()
@@ -93,7 +93,13 @@ function setup() {
         }
     })
 
-    renderDateNavigator()
+    // date nav listener
+    dateNav.attachEventsObserver({
+        update(subject) {
+            cal.renderMonth((subject as DateNavigator).selectedDate)
+        }
+    })
+
 }
 
 /** load events from a .json file, by using an ipc channel to receive the stringified events from the main process */
@@ -105,30 +111,26 @@ function loadEvents() {
         })
 }
 
-function getOffsetDate(): Date {
-    return new Date(selectedDate.getFullYear(), selectedDate.getMonth() + dateOffset, selectedDate.getDate())
+/** Offset by month */
+function getOffsetDate(date: Date, offsetMonth: number): Date {
+    return new Date(date.getFullYear(), date.getMonth() + offsetMonth, date.getDate())
 }
 
 /** Refreshes the calendar to show the previous month */
 function prevMonthBtnMouseUp() {
-    dateOffset -= 1
-    
-    cal.renderMonth(getOffsetDate())
+    dateNav.prevMonth()
+    cal.renderMonth(getOffsetDate(cal.monthViewed, -1))
 }
 
 /** Refreshes the calendar to show the next month */
 function nextMonthBtnMouseUp() {
-    dateOffset += 1
-
-    cal.renderMonth(getOffsetDate())
+    dateNav.nextMonth()
+    cal.renderMonth(getOffsetDate(cal.monthViewed, 1))
 }
 
 /** Refreshes the calendar to show the current month. */
 function currentMonthBtnMouseUp() {
-    dateOffset = 0
-    selectedDate = new Date()
-
-    cal.renderMonth(selectedDate)
+    dateNav.gotoToday()
 }
 
 
@@ -146,41 +148,6 @@ function setSelectedEvent(event: Event): void {
     const eventDiv = document.querySelector(`[data-event-id='${id}']`)
 
     eventDiv.classList.add('event-selected')
-}
-
-function renderDateNavigator() {
-    const selectorDates = document.querySelector('.selector-dates-div')
-    const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-    for (let i = 0; i < 7; i++) {
-        const p = document.createElement('p')
-        p.textContent = days[i]
-        selectorDates.appendChild(p)
-    }
-
-    const dayOffset = selectedDate.getDay()
-
-    for (let i = 0; i < 7 * 6; i++) {
-        let cDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i + 1 - dayOffset)
-        const p = document.createElement('p')
-        p.className = 'selector-date'
-        p.textContent = cDate.getDate().toString()
-        p.setAttribute('data-date', cDate.toDateString())
-
-        p.onclick = ev => {
-            selectedDate = new Date((ev.target as HTMLElement).getAttribute('data-date'))
-            dateOffset = 0
-            cal.renderMonth(selectedDate)
-        }
-        
-        if (cDate.getMonth() !== selectedDate.getMonth()) {
-            p.style.opacity = "70%"
-        }
-        if (cDate.getDate() === new Date().getDate()) {
-            p.style.backgroundColor = 'blue'
-            p.style.borderRadius = '50%'
-        }
-        selectorDates.appendChild(p)
-    }
 }
 
 

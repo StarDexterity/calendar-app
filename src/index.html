@@ -12,6 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 
 <body>
@@ -22,23 +24,37 @@
       <button id="next-month-btn"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
       <h3 id="calendar-title">February 2024</h3>
     </div>
+    <div class="view-btn-div">
+      <button class="view-btn">
+        <span class="material-symbols-rounded bold-icon">calendar_view_day</span>
+        <span>Day</span>
+      </button>
+      <button class="view-btn">
+        <span class="material-symbols-rounded bold-icon">calendar_view_week</span>
+        <span>Week</span>
+      </button>
+      <button class="view-btn">
+        <span class="material-symbols-rounded bold-icon">calendar_view_month</span>
+        <span>Month</span>
+      </button>
+    </div>
   </div>
   <main>
     <div id="left-sidebar">
-      <div class="selector-header">
-        <span>March, 2024</span>
-        <span>
-          <span class="material-symbols-outlined">keyboard_arrow_up</span>
-          <span class="material-symbols-outlined">keyboard_arrow_down</span>
-        </span>
+      <div class="datenav">
+        <div class="datenav-header">
+          <span id="datenav-title">March, 2024</span>
+          <span>
+            <span id="datenav-up-btn" class="material-symbols-outlined">keyboard_arrow_up</span>
+            <span id="datenav-down-btn" class="material-symbols-outlined">keyboard_arrow_down</span>
+          </span>
+        </div>
+        <div class="datenav-dates-div"></div>
       </div>
-      <div class="selector-dates-div"></div>
     </div>
 
 
     <div id="main" class="main-content">
-      <!-- <button id="save-events-btn">Save Events</button>
-      <button id="load-events-btn">Load Events</button> -->
       <div class="calendar">
         <div class="cal-header">
           <div class="cal-days-div">
@@ -68,20 +84,6 @@
         <div class="cal-dates-div"></div>
       </div>
     </div>
-
-    <!-- <div id="right-sidebar">
-      <div id="resize-handle" class="resize-handle"></div>
-      <div style="visibility: hidden;" class="infobar-div" id="infobar-div">
-        <div class="infobar-header">
-          <h3 id="infobar-header-date">${dateText}</h3>
-          <button id="infobar-add-event-btn" class="add-event-btn"><span
-              class="material-symbols-outlined">calendar_add_on</span></button>
-        </div>
-        <div id="infobar-events-div"></div>
-      </div>
-
-    </div> -->
-
     <div style="visibility: hidden;" id="add-event-display">
       <div id="add-event-blanket" class="blanket"></div>
       <div id="add-event-dialog" class="dialog">

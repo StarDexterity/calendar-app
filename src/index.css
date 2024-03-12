@@ -25,43 +25,40 @@ main {
   display: flex;
 }
 
-.navbar {
+.main-content {
+  height: 100%;
   display: flex;
-  justify-content: space-between;
-  padding-left: 10px;
-  padding-right: 20%;
-  height: 60px;
-  -webkit-app-region: drag;
-  border-bottom: black 1px solid;
-  align-items: center;
+  flex-direction: column;
+  flex: 1;
 }
 
-.navbar * {
-  -webkit-app-region: no-drag;
-}
-
-.navbar h3 {
-  margin: 0;
-}
-
+/* -------------------------------- left sidebar -------------------------------- */
 #left-sidebar {
   display: flex;
   flex-direction: column;
   align-items: center;
   align-content: stretch;
-  width: calc(15vw - 30px);
+  width: 200px;
   border-right: black 1px solid;
   padding: 15px;
 }
 
-.selector-header {
+.datenav {
+  width: 100%;
+}
+
+.datenav-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
   align-items: center;
 }
 
-.selector-dates-div {
+#datenav-up-btn, #datenav-down-btn {
+  cursor: pointer;
+}
+
+.datenav-dates-div {
   display: inline-grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(7, 1fr);
@@ -74,13 +71,23 @@ main {
   justify-content: space-between;
 }
 
-.selector-dates-div p {
+.datenav-dates-div p {
   margin: 0;
   line-height: 20px;
   width: 20px;
   height: 20px;
   padding: 0;
   cursor: pointer;
+}
+
+.datenav-today {
+  border-radius: 50%;
+  background-color: blue;
+}
+
+.datenav-selected {
+  border-radius: 50%;
+  background-color: rgb(135, 135, 192);
 }
 
 #right-sidebar {
@@ -91,38 +98,24 @@ main {
   overflow: visible;
 }
 
-.main-content {
-  height: 100%;
+/* --------------------- navbar ----------------------------- */
+.navbar {
   display: flex;
-  flex-direction: column;
-  flex: 1;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 20%;
+  height: 60px;
+  -webkit-app-region: drag;
+  border-bottom: black 1px solid;
+  align-items: center;
 }
 
-/* ----------------------- calendar --------------------------------- */
-
-.calendar {
-  display: flex;
-  flex-direction: column;
-  /* background-image: linear-gradient(to bottom right, rgb(245, 110, 110), rgb(128, 239, 145)); */
-  border-radius: 1rem;
-  height: 100%;
-  padding: 10px;
+.navbar button {
+  -webkit-app-region: no-drag;
 }
 
-/* @media (max-width: 1200px) {
-  .calendar {
-    aspect-ratio: 1.1;
-  }
-} */
-
-.cal-header {
-  margin-bottom: 0.3%;
-}
-
-.cal-header h2 {
-  display: inline-block;
-  margin-top: 0;
-  font-weight: 500;
+.navbar h3 {
+  margin: 0;
 }
 
 .cal-date-controls {
@@ -146,11 +139,60 @@ main {
   font-weight: bold;
 }
 
-
-
 .cal-date-controls button:hover {
   background-color: #e7e7e7ca;
 
+}
+
+.bold-icon {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 500,
+  'GRAD' 0,
+  'opsz' 20;
+
+  font-size: 20px;
+}
+
+.view-btn-div {
+  /* border: 1px solid #b8b8b8; */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.view-btn {
+  background-color: #e7e7e7;
+  border: none;
+  cursor: pointer;
+  height: 40px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0 7px;
+}
+
+.view-btn span {
+  vertical-align: middle;
+}
+
+
+/* ----------------------- calendar --------------------------------- */
+.calendar {
+  display: flex;
+  flex-direction: column;
+  /* background-image: linear-gradient(to bottom right, rgb(245, 110, 110), rgb(128, 239, 145)); */
+  border-radius: 1rem;
+  height: 100%;
+  padding: 10px;
+}
+
+.cal-header {
+  margin-bottom: 0.3%;
+}
+
+.cal-header h2 {
+  display: inline-block;
+  margin-top: 0;
+  font-weight: 500;
 }
 
 .cal-days-div {
