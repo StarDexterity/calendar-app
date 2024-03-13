@@ -66,6 +66,7 @@ export default class DateNavigator implements Subject {
             const p = document.createElement('p')
             p.className = 'selector-date'
             p.onclick = ev => {
+                this.offset = 0
                 this.selectedDate = new Date((ev.target as HTMLElement).getAttribute('data-date'))
                 this.renderMonth()
                 this.notify()
