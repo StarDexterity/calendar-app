@@ -26,43 +26,51 @@ export default class MonthView implements Observer, CalendarView {
 
 
     private init(): void {
-        this.container.innerHTML = `<div class="month-view">
-        <div class="cal-header">
-          <div class="cal-days-div">
-            <div class="cal-day-div">
-              <p>SUN</p>
+        this.container.innerHTML = `
+        <div class="month-view">
+            <div class="cal-header">
+                <div class="cal-days-div">
+                    <div class="cal-day-div">
+                        <p>SUN</p>
+                    </div>
+                    <div class="cal-day-div">
+                        <p>MON</p>
+                    </div>
+                    <div class="cal-day-div">
+                        <p>TUE</p>
+                    </div>
+                    <div class="cal-day-div">
+                        <p>WED</p>
+                    </div>
+                    <div class="cal-day-div">
+                        <p>THU</p>
+                    </div>
+                    <div class="cal-day-div">
+                        <p>FRI</p>
+                    </div>
+                    <div class="cal-day-div">
+                        <p>SAT</p>
+                    </div>
+                </div>
             </div>
-            <div class="cal-day-div">
-              <p>MON</p>
-            </div>
-            <div class="cal-day-div">
-              <p>TUE</p>
-            </div>
-            <div class="cal-day-div">
-              <p>WED</p>
-            </div>
-            <div class="cal-day-div">
-              <p>THU</p>
-            </div>
-            <div class="cal-day-div">
-              <p>FRI</p>
-            </div>
-            <div class="cal-day-div">
-              <p>SAT</p>
-            </div>
-          </div>
-        </div>
-        <div class="cal-dates-div"></div>
-      </div>
+            <div class="cal-dates-div"></div>
         </div>`
 
         this.calTitle = document.getElementById('calendar-title')
         this.datesDiv = document.querySelector('.cal-dates-div')
 
         for (let i = 0; i < 6 * 7; i++) {
-            const calDateDiv = document.createElement('div')
-            calDateDiv.className = 'cal-date-div'
-            this.datesDiv.appendChild(calDateDiv)
+            const dateDiv = document.createElement('div')
+            dateDiv.className = 'cal-date-div'
+            dateDiv.addEventListener('mouseup', this.calendarDateDivMouseUp)
+            dateDiv.innerHTML = `
+            <div style="display: flex; justify-content: space-between;">
+                <p class="cal-date-title"></p>
+                <div class="current-date-icon"></div>
+            </div>
+            <div class="cal-events-div"></div>
+            `
+            this.datesDiv.appendChild(dateDiv)
         }
     }
 
@@ -87,25 +95,16 @@ export default class MonthView implements Observer, CalendarView {
         this.calTitle.textContent = monthYearString(date.getFullYear(), date.getMonth())
 
         Array.from(this.datesDiv.children).forEach((dateDiv, i) => {
-            dateDiv.addEventListener('mouseup', this.calendarDateDivMouseUp)
-
             let cDate = new Date(date.getFullYear(), date.getMonth(), i + 1 - dayOffset)
             let fDate = cDate.getDate().toString()
             if (i == 0 || fDate === '1') {
                 fDate = monthStringShort(cDate.getMonth()) + ' ' + fDate
             }
 
-            dateDiv.innerHTML = `
-            <div style="display: flex; justify-content: space-between;">
-                <p class="cal-date-title">${fDate}</p>
-                <div class="current-date-icon"></div>
-            </div>
-            <div class="cal-events-div"></div>
-            `
+            dateDiv.querySelector('.cal-date-title').textContent = fDate
 
             // can retrieve data value from div in the future
             dateDiv.setAttribute('data-date', `${cDate.toDateString()}`)
-
         })
 
         // add events
@@ -168,8 +167,7 @@ export default class MonthView implements Observer, CalendarView {
         eventDiv.setAttribute('data-event-id', [dateStr, index].join(','))
         eventDiv.onmouseup = this.calendarEventDivMouseUp
         eventDiv.innerHTML = `
-    <p class="cal-event-time">${format12HourTime(event.startTime)}</p><p class="cal-event-title">${event.title}</p>
-    `
+        <p class="cal-event-time">${format12HourTime(event.startTime)}</p><p class="cal-event-title">${event.title}</p>`
         return eventDiv
     }
 

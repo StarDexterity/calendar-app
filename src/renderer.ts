@@ -151,24 +151,20 @@ function loadEvents(): Promise<string> {
 
 /** Refreshes the calendar to show the previous month */
 function prevMonthBtnMouseUp() {
-    throw new Error('not implemented')
-
-    // dateNav.prevMonth()
-    // cal.renderDate(getOffsetDate(cal.monthViewed, -1))
+    dateNav.prevMonth()
+    currentView.renderScrollDate(-1)
 }
 
 /** Refreshes the calendar to show the next month */
 function nextMonthBtnMouseUp() {
-    throw new Error('not implemented')
-    // dateNav.nextMonth()
-    // cal.renderDate(getOffsetDate(cal.monthViewed, 1))
+    dateNav.prevMonth()
+    currentView.renderScrollDate(1)
 }
 
 /** Refreshes the calendar to show the current month. */
 function currentMonthBtnMouseUp() {
-    throw new Error('not implemented')
-
-    // dateNav.gotoToday()
+    dateNav.gotoToday()
+    currentView.renderDate(new Date())
 }
 
 

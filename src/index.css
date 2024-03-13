@@ -118,6 +118,10 @@ main {
   margin: 0;
 }
 
+#calendar-title {
+ width: 170px;  
+}
+
 .cal-date-controls {
   display: flex;
   float: right;
