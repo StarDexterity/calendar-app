@@ -1,27 +1,62 @@
 import { format12HourTime, monthStringShort, monthYearString } from "./time";
 import { Event, Events } from './events'
 import { Observer, Subject } from "./observer";
+import { CalendarView } from "./calendarView";
 
-export default class Calendar implements Observer {
+import './monthView.css'
+
+export default class MonthView implements Observer, CalendarView {
     private events: Events
     private calTitle: HTMLElement
     private datesDiv: HTMLElement
     private maxEvents = 3 // displayed per date
-    
-    private _monthViewed: Date
-
-    private set monthViewed(val: Date) {
-        this._monthViewed = val
-    }
-
-    public get monthViewed(): Date {
-        return this._monthViewed
-    }
+    private locale = 'en-GB'
 
 
-    constructor(events: Events) {
+    private viewedDate: Date
+    private container: HTMLElement
+
+
+    constructor(initialDate: Date, events: Events, containerId: string) {
         this.events = events
+        this.container = document.getElementById(containerId)
         this.events.attachEventsObserver(this)
+        this.viewedDate = initialDate
+
+        this.init()
+    }
+
+
+    private init(): void {
+        this.container.innerHTML = `<div class="month-view">
+        <div class="cal-header">
+          <div class="cal-days-div">
+            <div class="cal-day-div">
+              <p>SUN</p>
+            </div>
+            <div class="cal-day-div">
+              <p>MON</p>
+            </div>
+            <div class="cal-day-div">
+              <p>TUE</p>
+            </div>
+            <div class="cal-day-div">
+              <p>WED</p>
+            </div>
+            <div class="cal-day-div">
+              <p>THU</p>
+            </div>
+            <div class="cal-day-div">
+              <p>FRI</p>
+            </div>
+            <div class="cal-day-div">
+              <p>SAT</p>
+            </div>
+          </div>
+        </div>
+        <div class="cal-dates-div"></div>
+      </div>
+        </div>`
 
         this.calTitle = document.getElementById('calendar-title')
         this.datesDiv = document.querySelector('.cal-dates-div')
@@ -33,19 +68,26 @@ export default class Calendar implements Observer {
         }
     }
 
+
+    render(): void { this.renderDate(this.viewedDate) }
+
+    renderScrollDate(amount: number): void {
+        this.renderDate(new Date(this.viewedDate.getFullYear(), this.viewedDate.getMonth() + amount, this.viewedDate.getDate()))
+    }
+
     update(subject: Subject): void {
         this.renderEvents()
     }
 
 
     /** Creates all the content within the calendar dates div, only call on setup, prevMonth, nextMonth, currentMonth, or when the vast majority of the content gets changed. Do not call for minor changes. */
-    public renderMonth(month: Date) {
+    public renderDate(month: Date) {
         const date = new Date(month.getFullYear(), month.getMonth(), 1)
         const dayOffset = date.getDay();
 
         // set calendar title
         this.calTitle.textContent = monthYearString(date.getFullYear(), date.getMonth())
-        
+
         Array.from(this.datesDiv.children).forEach((dateDiv, i) => {
             dateDiv.addEventListener('mouseup', this.calendarDateDivMouseUp)
 
@@ -79,12 +121,12 @@ export default class Calendar implements Observer {
             c.classList.add('current-date')
         }
 
-        this.monthViewed = month
+        this.viewedDate = month
     }
 
 
     /** Renders all events. Clears current events, adds all events from event data. Only call if all events are likely to change. For example: if loading event data. */
-    public renderEvents() {
+    private renderEvents() {
         Array.from(this.datesDiv.children).forEach((dateDiv, i) => {
             // get date str
             const dateStr = dateDiv.getAttribute('data-date')
@@ -152,33 +194,65 @@ export default class Calendar implements Observer {
         // // get date
         const date = new Date(calDateDiv.getAttribute('data-date'))
 
-
-        // renderSidebar(date)
     }
 
     /** On calendar event div clicked */
-    private calendarEventDivMouseUp(ev: MouseEvent) {
+    private calendarEventDivMouseUp = (ev: MouseEvent) => {
         // get event div
         const eventDiv = ev.currentTarget as HTMLElement
 
         // get event from the event id attribute
-        const id = eventDiv.getAttribute('data-event-id')
+        const id = eventDiv.getAttribute('data-event-id').toString()
+        const date = new Date(eventDiv.parentElement.parentElement.getAttribute('data-date'))
 
         const selectedEventDiv = document.querySelector('.event-selected')
-
-        // if event is already selected, return early
-        if (selectedEventDiv && selectedEventDiv !== eventDiv) return;
 
         // stops event div click event from happening
         ev.stopPropagation()
 
         const event = this.events.getEventFromId(id)
 
-        // const eventDetailsDiv = showEventDetailsPopup(event, eventDiv)
-        // eventDetailsDiv.style.top = eventDiv.getBoundingClientRect().top - eventDetailsDiv.clientHeight / 2 + 'px'
-        // eventDetailsDiv.style.left = eventDiv.getBoundingClientRect().left + eventDiv.clientWidth + 10 + 'px'
+        const eventDetailsDiv = this.showEventDetailsPopup(event, eventDiv)
+        eventDetailsDiv.style.top = eventDiv.getBoundingClientRect().top - eventDetailsDiv.clientHeight / 2 + 'px'
 
-        // // set selected event as event
-        // setSelectedEvent(event)
+        if (date.getDay() < 2) {
+            eventDetailsDiv.style.left = eventDiv.getBoundingClientRect().left + eventDiv.clientWidth + 10 + 'px'
+        } else {
+            eventDetailsDiv.style.left = eventDiv.getBoundingClientRect().left - eventDetailsDiv.clientWidth - 10 + 'px'
+        }
+    }
+
+    /** displays event details popup using the event parameter
+ * @returns The popup div, so it can be adjusted as need.
+ */
+    private showEventDetailsPopup(event: Event, eventDiv: HTMLElement): HTMLElement {
+        const eventDetailsDiv = document.getElementById('event-details-popup')
+
+        // display div
+        eventDetailsDiv.style.visibility = 'visible'
+
+        // reset position of div
+        eventDetailsDiv.style.removeProperty('left')
+        eventDetailsDiv.style.removeProperty('top')
+        eventDetailsDiv.style.removeProperty('right')
+        eventDetailsDiv.style.removeProperty('bottom')
+
+        // get content elements of event details pop-up
+        const title = document.getElementById('event-details-title')
+        const time = document.getElementById('event-details-time')
+        const description = document.getElementById('event-details-description')
+
+        // set content to display event
+        title.textContent = event.title
+        time.textContent = event.startTime.toLocaleString(this.locale, { dateStyle: 'short', timeStyle: 'short', hour12: true })
+
+        if (event.endTime) {
+            time.textContent += ' - ' + event.endTime.toLocaleString(this.locale, { timeStyle: 'short', hour12: true })
+        }
+
+        description.textContent = event.description
+
+        // returns div so div can be placed accordingly
+        return eventDetailsDiv
     }
 }

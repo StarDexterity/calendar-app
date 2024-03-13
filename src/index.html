@@ -19,21 +19,21 @@
 <body>
   <div class="navbar">
     <div class="cal-date-controls">
+      <h3 id="calendar-title">February 2024</h3>
       <button id="current-month-btn">Today</button>
       <button id="prev-month-btn"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
       <button id="next-month-btn"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
-      <h3 id="calendar-title">February 2024</h3>
     </div>
     <div class="view-btn-div">
-      <button class="view-btn">
+      <button class="view-btn" data-view="2">
         <span class="material-symbols-rounded bold-icon">calendar_view_day</span>
         <span>Day</span>
       </button>
-      <button class="view-btn">
+      <button class="view-btn" data-view="1">
         <span class="material-symbols-rounded bold-icon">calendar_view_week</span>
         <span>Week</span>
       </button>
-      <button class="view-btn">
+      <button class="view-btn" data-view="0">
         <span class="material-symbols-rounded bold-icon">calendar_view_month</span>
         <span>Month</span>
       </button>
@@ -41,6 +41,11 @@
   </div>
   <main>
     <div id="left-sidebar">
+      <button id="sidebar-add-event-btn">
+        <span class="material-symbols-rounded">event</span>
+        <span>Add Event</span>
+      </button>
+
       <div class="datenav">
         <div class="datenav-header">
           <span id="datenav-title">March, 2024</span>
@@ -55,115 +60,91 @@
 
 
     <div id="main" class="main-content">
-      <div class="calendar">
-        <div class="cal-header">
-          <div class="cal-days-div">
-            <div class="cal-day-div">
-              <p>SUN</p>
+
+
+      <div id="calendar"></div>
+      <div style="visibility: hidden;" id="add-event-display">
+        <div id="add-event-blanket" class="blanket"></div>
+        <div id="add-event-dialog" class="dialog">
+          <div class="dialog-header">
+            <h2>New Event</h2>
+            <span id="add-event-close-btn" class="dialog-close-btn material-symbols-outlined">close</span>
+          </div>
+          <hr>
+          <form class="dialog-form" id="add-event-form">
+            <div class="form-flex">
+              <label for="title">Title</label>
+              <input id="add-event-title" required type="text" name="title">
             </div>
-            <div class="cal-day-div">
-              <p>MON</p>
+
+            <div class="form-flex">
+              <label for="startTime">Start Time</label>
+              <input id="add-event-start-time" type="text" required name="startTime">
             </div>
-            <div class="cal-day-div">
-              <p>TUE</p>
+            <div class="form-flex">
+              <label for="endTime">Finish Time</label>
+              <input id="add-event-end-time" type="text" name="endTime">
             </div>
-            <div class="cal-day-div">
-              <p>WED</p>
+            <div class="form-flex">
+              <label for="description">Description</label>
+              <textarea name="description" rows="4"></textarea>
             </div>
-            <div class="cal-day-div">
-              <p>THU</p>
+            <p id="add-event-time-preview">Preview</p>
+            <p id="add-event-time-preview2"></p>
+            <button class="form-submit-btn"><span class="material-symbols-outlined">calendar_add_on</span></button>
+          </form>
+        </div>
+      </div>
+
+      <div style="visibility: hidden;" id="update-event-display">
+        <div id="update-event-blanket" class="blanket"></div>
+        <div id="update-event-dialog" class="dialog">
+          <div class="dialog-header">
+            <h2>Update Event</h2>
+            <span id="update-event-close-btn" class="dialog-close-btn material-symbols-outlined">close</span>
+          </div>
+          <hr>
+          <form class="dialog-form" id="update-event-form">
+            <div class="form-flex">
+              <label for="title">Title</label>
+              <input id="update-event-title" required type="text" name="title">
             </div>
-            <div class="cal-day-div">
-              <p>FRI</p>
+
+            <div class="form-flex">
+              <label for="startTime">Start Time</label>
+              <input id="update-event-start-time" type="time" required name="startTime">
             </div>
-            <div class="cal-day-div">
-              <p>SAT</p>
+            <div class="form-flex">
+              <label for="endTime">Finish Time</label>
+              <input id="update-event-end-time" type="time" name="endTime">
             </div>
+            <div class="form-flex">
+              <label for="description">Description</label>
+              <textarea id="update-event-description" name="description" rows="4"></textarea>
+            </div>
+            <button class="form-submit-btn"><span class="material-symbols-outlined">save</span></button>
+          </form>
+        </div>
+      </div>
+
+
+
+      <div id="event-details-popup" class="view-event-popup">
+        <div class="flex-space-between">
+          <h4 id="event-details-title"></h4>
+          <div>
+            <button id="event-details-delete-btn" class="control-btn"><span
+                class="material-symbols-outlined">delete</span></button>
+            <button id="event-details-edit-btn" class="control-btn"><span
+                class="material-symbols-outlined">edit</span></button>
+            <button id="event-details-close-btn" class="control-btn"><span
+                class="material-symbols-outlined">close</span></button>
           </div>
         </div>
-        <div class="cal-dates-div"></div>
-      </div>
-    </div>
-    <div style="visibility: hidden;" id="add-event-display">
-      <div id="add-event-blanket" class="blanket"></div>
-      <div id="add-event-dialog" class="dialog">
-        <div class="dialog-header">
-          <h2>New Event</h2>
-          <span id="add-event-close-btn" class="dialog-close-btn material-symbols-outlined">close</span>
-        </div>
+        <p id="event-details-time"></p>
         <hr>
-        <form class="dialog-form" id="add-event-form">
-          <div class="form-flex">
-            <label for="title">Title</label>
-            <input id="add-event-title" required type="text" name="title">
-          </div>
-
-          <div class="form-flex">
-            <label for="startTime">Start Time</label>
-            <input type="time" required name="startTime">
-          </div>
-          <div class="form-flex">
-            <label for="endTime">Finish Time</label>
-            <input type="time" name="endTime">
-          </div>
-          <div class="form-flex">
-            <label for="description">Description</label>
-            <textarea name="description" rows="4"></textarea>
-          </div>
-          <button class="form-submit-btn"><span class="material-symbols-outlined">calendar_add_on</span></button>
-        </form>
+        <p id="event-details-description"></p>
       </div>
-    </div>
-
-    <div style="visibility: hidden;" id="update-event-display">
-      <div id="update-event-blanket" class="blanket"></div>
-      <div id="update-event-dialog" class="dialog">
-        <div class="dialog-header">
-          <h2>Update Event</h2>
-          <span id="update-event-close-btn" class="dialog-close-btn material-symbols-outlined">close</span>
-        </div>
-        <hr>
-        <form class="dialog-form" id="update-event-form">
-          <div class="form-flex">
-            <label for="title">Title</label>
-            <input id="update-event-title" required type="text" name="title">
-          </div>
-
-          <div class="form-flex">
-            <label for="startTime">Start Time</label>
-            <input id="update-event-start-time" type="time" required name="startTime">
-          </div>
-          <div class="form-flex">
-            <label for="endTime">Finish Time</label>
-            <input id="update-event-end-time" type="time" name="endTime">
-          </div>
-          <div class="form-flex">
-            <label for="description">Description</label>
-            <textarea id="update-event-description" name="description" rows="4"></textarea>
-          </div>
-          <button class="form-submit-btn"><span class="material-symbols-outlined">save</span></button>
-        </form>
-      </div>
-    </div>
-
-
-
-    <div id="event-details-popup" class="view-event-popup">
-      <div class="flex-space-between">
-        <h4 id="event-details-title"></h4>
-        <div>
-          <button id="event-details-delete-btn" class="control-btn"><span
-              class="material-symbols-outlined">delete</span></button>
-          <button id="event-details-edit-btn" class="control-btn"><span
-              class="material-symbols-outlined">edit</span></button>
-          <button id="event-details-close-btn" class="control-btn"><span
-              class="material-symbols-outlined">close</span></button>
-        </div>
-      </div>
-      <p id="event-details-time"></p>
-      <hr>
-      <p id="event-details-description"></p>
-    </div>
   </main>
 </body>
 

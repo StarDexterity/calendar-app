@@ -1,21 +1,24 @@
 import './index.css';
 import { format12HourTime, monthYearString, format24HourTime, getTimeFromMidnight, monthStringShort, combineDateWithTime } from './time'
-import Calendar from './calendar';
 import { Events, Event } from './events';
 import DateNavigator from './dateNavigator';
+import MonthView from './monthView';
+import { CalendarViewType, CalendarView } from './calendarView'
+import * as chrono from 'chrono-node'
+
 
 // preferences
 const locale = 'en-GB'
+const viewContainerId = 'calendar'
 
 // data
 const events: Events = new Events()
 let selectedEvent: Event = null
 
 
-let viewLevel: string = 'month' // options: ['month', 'week', 'day']
-
-const cal = new Calendar(events)
 const dateNav = new DateNavigator()
+
+let currentView: CalendarView
 
 // set up buttons and calendar
 setup()
@@ -23,12 +26,6 @@ setup()
 
 /** Sets up functionality for the application. This function is responsible for adding all event listeners, loading data, and rendering the calendar. */
 function setup() {
-    // save events to storage
-    // document.getElementById('save-events-btn').onclick = saveEvents
-
-    // load events from storage
-    // document.getElementById('load-events-btn').onclick = loadEvents
-
     // prev month button
     document.getElementById('prev-month-btn').onmouseup = prevMonthBtnMouseUp
 
@@ -60,6 +57,9 @@ function setup() {
 
     })
 
+    // add event
+    document.getElementById('sidebar-add-event-btn').onmouseup = addEventBtnClick
+
     // view event close button
     document.getElementById('event-details-close-btn').onmouseup = () => {
         document.getElementById('event-details-popup').style.visibility = 'hidden'
@@ -80,11 +80,23 @@ function setup() {
     // connect update event form on submit listener
     (document.getElementById('update-event-form') as HTMLFormElement).onsubmit = updateEventFormOnSubmit
 
-    // connect infobar add event button on click listener
-    // document.getElementById('infobar-add-event-btn').onclick = addEventBtnClick
 
-    // load events and render when ready
-    loadEvents()
+    // connect view buttons on click listener
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        (btn as HTMLElement).onmouseup = viewBtnClicked
+    })
+
+    // select month view
+    document.querySelector('.view-btn[data-view="0"]').classList.add('view-selected')
+
+    // default view (default today)
+    currentView = new MonthView(new Date(), events, viewContainerId)
+    
+    // load events from storage and render view when ready
+    loadEvents().then(res => {
+        events.from(res)
+        currentView.render()
+    })
 
     // set up save functionality
     events.attachEventsObserver({
@@ -96,41 +108,67 @@ function setup() {
     // date nav listener
     dateNav.attachEventsObserver({
         update(subject) {
-            cal.renderMonth((subject as DateNavigator).selectedDate)
+            currentView.renderDate((subject as DateNavigator).selectedDate)
         }
     })
 
 }
 
-/** load events from a .json file, by using an ipc channel to receive the stringified events from the main process */
-function loadEvents() {
-    (window as any).electronAPI.loadData()
-        .then((res: string) => {
-            events.from(res)
-            cal.renderMonth(new Date())
-        })
+function switchViewType(viewType: CalendarViewType): void {
+    document.getElementById('calendar').innerHTML = ''
+    currentView = null
+
+    switch (viewType) {
+        case CalendarViewType.Day:
+            break
+        case CalendarViewType.Week:
+            break
+        case CalendarViewType.Month:
+            currentView = new MonthView(dateNav.selectedDate, events, viewContainerId)
+    }
+
+    currentView?.render()
 }
 
-/** Offset by month */
-function getOffsetDate(date: Date, offsetMonth: number): Date {
-    return new Date(date.getFullYear(), date.getMonth() + offsetMonth, date.getDate())
+function viewBtnClicked(ev: MouseEvent) {
+    const btn = ev.currentTarget as HTMLElement
+    const view = parseInt(btn.getAttribute('data-view')) as CalendarViewType
+
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        if (btn.classList.contains('view-selected')) {
+            btn.classList.remove('view-selected')
+        }
+    })
+
+    btn.classList.add('view-selected')
+    switchViewType(view)
+}
+
+/** load events from a .json file, by using an ipc channel to receive the stringified events from the main process */
+function loadEvents(): Promise<string> {
+    return (window as any).electronAPI.loadData()
 }
 
 /** Refreshes the calendar to show the previous month */
 function prevMonthBtnMouseUp() {
-    dateNav.prevMonth()
-    cal.renderMonth(getOffsetDate(cal.monthViewed, -1))
+    throw new Error('not implemented')
+
+    // dateNav.prevMonth()
+    // cal.renderDate(getOffsetDate(cal.monthViewed, -1))
 }
 
 /** Refreshes the calendar to show the next month */
 function nextMonthBtnMouseUp() {
-    dateNav.nextMonth()
-    cal.renderMonth(getOffsetDate(cal.monthViewed, 1))
+    throw new Error('not implemented')
+    // dateNav.nextMonth()
+    // cal.renderDate(getOffsetDate(cal.monthViewed, 1))
 }
 
 /** Refreshes the calendar to show the current month. */
 function currentMonthBtnMouseUp() {
-    dateNav.gotoToday()
+    throw new Error('not implemented')
+
+    // dateNav.gotoToday()
 }
 
 
@@ -164,6 +202,18 @@ function displayAddEventDialog() {
     document.getElementById('add-event-title').focus()
 }
 
+document.getElementById('add-event-start-time').addEventListener('input', (ev) => {
+    const preview = document.getElementById('add-event-time-preview')
+    preview.textContent = chrono.parseDate((ev.target as HTMLElement).value)?.toLocaleString()
+    if (!preview.textContent) preview.textContent = 'Preview'
+})
+
+document.getElementById('add-event-end-time').addEventListener('input', (ev) => {
+    const preview = document.getElementById('add-event-time-preview2')
+    preview.textContent = ' - ' + chrono.parseDate((ev.target as HTMLElement).value)?.toLocaleString()
+})
+
+
 /** On Add Event Form submit, add the new event created from the add event form fields to the events variable */
 function addEventFormOnSubmit() {
     const addEventForm = (document.getElementById('add-event-form') as HTMLFormElement)
@@ -171,11 +221,11 @@ function addEventFormOnSubmit() {
 
     // required
     const title = data.get('title').toString()
-    const startTime = combineDateWithTime(selectedDate.toDateString(), data.get('startTime').toString())
+    const startTime = chrono.parseDate(data.get('startTime').toString(), new Date(), {forwardDate: true})
 
     // optional
     const endTimeStr = data.get('endTime').toString()
-    const endTime = endTimeStr ? combineDateWithTime(selectedDate.toDateString(), endTimeStr) : null
+    const endTime =  endTimeStr ? chrono.parseDate(endTimeStr, startTime, {forwardDate: true}): null
     const description = data.get('description').toString()
 
     // create event using fields
@@ -217,42 +267,6 @@ function updateEventFormOnSubmit() {
 }
 
 // view event functions
-
-
-/** displays event details popup using the event parameter
- * @returns The popup div, so it can be adjusted as need.
- */
-function showEventDetailsPopup(event: Event, eventDiv: HTMLElement): HTMLElement {
-    selectedEvent = event
-    const eventDetailsDiv = document.getElementById('event-details-popup')
-
-    // display div
-    eventDetailsDiv.style.visibility = 'visible'
-
-    // reset position of div
-    eventDetailsDiv.style.removeProperty('left')
-    eventDetailsDiv.style.removeProperty('top')
-    eventDetailsDiv.style.removeProperty('right')
-    eventDetailsDiv.style.removeProperty('bottom')
-
-    // get content elements of event details pop-up
-    const title = document.getElementById('event-details-title')
-    const time = document.getElementById('event-details-time')
-    const description = document.getElementById('event-details-description')
-
-    // set content to display event
-    title.textContent = event.title
-    time.textContent = event.startTime.toLocaleString(locale, { dateStyle: 'short', timeStyle: 'short', hour12: true })
-
-    if (event.endTime) {
-        time.textContent += ' - ' + event.endTime.toLocaleString(locale, { timeStyle: 'short', hour12: true })
-    }
-
-    description.textContent = event.description
-
-    // returns div so div can be placed accordingly
-    return eventDetailsDiv
-}
 
 
 function hideEventDetails(ev: MouseEvent) {

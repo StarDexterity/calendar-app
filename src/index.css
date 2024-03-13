@@ -101,9 +101,9 @@ main {
 /* --------------------- navbar ----------------------------- */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   padding-left: 10px;
-  padding-right: 20%;
+  padding-right: 120px;
   height: 60px;
   -webkit-app-region: drag;
   border-bottom: black 1px solid;
@@ -170,18 +170,24 @@ main {
   padding: 0 7px;
 }
 
-.view-btn span {
+.view-selected {
+  background-color: #c3c2e8;
+}
+
+button span {
   vertical-align: middle;
 }
 
 
 /* ----------------------- calendar --------------------------------- */
-.calendar {
+#calendar {
+  flex: 1;
+}
+
+.month-view {
   display: flex;
   flex-direction: column;
-  /* background-image: linear-gradient(to bottom right, rgb(245, 110, 110), rgb(128, 239, 145)); */
-  border-radius: 1rem;
-  height: 100%;
+  height: calc(100% - 20px);
   padding: 10px;
 }
 
@@ -368,14 +374,14 @@ main {
 }
 
 
-/* --------- adialog --------------- */
+/* --------- dialog --------------- */
 .dialog {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   min-width: 18vw;
-  padding: 0.5vw;
+  padding: 1.2vw;
 
   background-color: #F3F3F3;
   border-radius: 1%;
@@ -414,7 +420,7 @@ textarea {
   flex: 1;
   border: none;
   background-color: #D9D9D9;
-  border-radius: 11px;
+  border-radius: 5px;
   max-width: 60%;
 }
 
@@ -443,8 +449,6 @@ textarea {
   height: 100%;
   top: 60px;
   left: 0;
-  backdrop-filter: blur(2px);
-  background-color: #00000046;
 }
 
 .dialog-close-btn {
@@ -453,6 +457,15 @@ textarea {
 
 .dialog-close-btn:hover {
   transform: scale(1.1);
+}
+
+/* ------------- add event dialog ------------------- */
+#add-event-dialog {
+  width: 310px;
+}
+
+#add-event-time-preview {
+  float: left;
 }
 
 /* ------------- view event popup ------------------ */
