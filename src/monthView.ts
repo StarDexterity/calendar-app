@@ -3,8 +3,6 @@ import { Event, Events } from './events'
 import { Observer, Subject } from "./observer";
 import { CalendarView } from "./calendarView";
 
-import './monthView.css'
-
 export default class MonthView implements Observer, CalendarView {
     private events: Events
     private calTitle: HTMLElement
